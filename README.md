@@ -125,12 +125,11 @@ http://localhost:15672 접속하여 `config`/`config`
 
 ![Imgur](https://i.imgur.com/XMcLKv9.png)
 
-1. RabbitMQ
-2. Cloudconfig
-3. Service-discovery: [http://localhost:9000](http://localhost:9000)
-4. Api-gateway
-5. Api-user / Api-product / Api-order / Api-delivery
-6. [Hystrix-dashboard](http://localhost:8998/hystrix/monitor?stream=http://localhost:8998/turbine.stream) (이건 딱히 순서 상관 없는 듯?)
+1. Cloudconfig
+2. Service-discovery: [http://localhost:9000](http://localhost:9000)
+3. Api-gateway
+4. Api-user / Api-product / Api-order / Api-delivery
+5. [Hystrix-dashboard](http://localhost:8998/hystrix/monitor?stream=http://localhost:8998/turbine.stream) (이건 딱히 순서 상관 없는 듯?)
 
 전부 실행된 모습 (`Api-delivery`는 3개 띄워봄...)
 
