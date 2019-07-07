@@ -21,7 +21,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/JiHyunSim/msa-example.git
+          uri: https://github.com/antop-dev/msa-example-config.git
 
 server:
   port: 8888
@@ -35,7 +35,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/JiHyunSim/msa-example.git
+          uri: https://github.com/antop-dev/msa-example-config.git
   rabbitmq:
     host: 127.0.0.1
     port: 5672

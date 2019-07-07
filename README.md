@@ -1,65 +1,159 @@
 # msa-example
+
 사내 교육 MSA
 
+`JDK`나 `IntelliJ` 관련 설정은 건너뛴다. 예제가 `Lombok`을 사용하므로 `IntelliJ + Lombok` 은 알아서 설정하자.
 
-1.     Intellij 개발툴 설치 (https://www.jetbrains.com/idea/download/#section=mac)
+## Import Project
 
-2.     RabbitMQ 설치 (https://www.rabbitmq.com/download.html)
+Clone project
 
-A.     사용자 추가
+![Imgur](https://i.imgur.com/my8XlrD.png)
 
-  i.         rabbitmqctl add_user config config
-  
-  ii.        rabbitmqctl set_user_tags config administrator
-  
-  iii.       rabbitmqctl set_permissions -p / config ".*" ".*" ".*"
+Yes!
 
-B.      GUI Console사용하기
+![Imgur](https://i.imgur.com/jIPNJvu.png)
 
-  i.         rabbitmq-plugins enable rabbitmq_management
+`Create project from existing sources` 선택
 
-3.     JDK 1.8 설치
+![Imgur](https://i.imgur.com/5HbxD6a.png)
 
-4.     개발툴 세팅
+Next
 
-A.     Preferences->Build->Compiler->Annotation Processors -> Enable annotation processing 체크
+![Imgur](https://i.imgur.com/y70JBtg.png)
 
-B.      Preferences->Plugins Lombok Plugin 설치
+아무것도 선택하지 않는다.
 
-5.     빌드 및 실행 순서
+![Imgur](https://i.imgur.com/vqCIlDe.png)
 
-A.     Cloudconfig
+메인 디렉토리만 `Import`된 상태
 
-B.      Service-discovery
+![Imgur](https://i.imgur.com/Ke1s0Cy.png)
 
-C.      Api-gateway
+모듈을 하나하나 추가 해준다.
 
-D.     Hystrix-dashboard
+![Imgur](https://i.imgur.com/FzZE8vz.png)
 
-E.      Api-user,api-product,api-order,api-delivery
+하위 디렉토리에 있는 프로젝트를 하나 선택한다.
 
-6.     WebGUI
+![Imgur](https://i.imgur.com/QrSPOPL.png)
 
-A.     Eureka : http://localhost:9000
+`Gradle` 선택
 
-B.      Hystrix : http://localhost:8998/hystrix/monitor?stream=http://localhost:8998/turbine.stream
+![Imgur](https://i.imgur.com/TC6W2Oo.png)
 
-C.      RabbitMQ : http://localhost:15672
+대충... Finish
 
-7.     API TEST
+![Imgur](https://i.imgur.com/onl9b21.png)
 
-A.     User API : http://localhost:8081/v1/user/{id}
+모든 프로젝트를 추가해준다.
 
-B.      Product API : http://localhost:8082/v1/product/{id}
+![Imgur](https://i.imgur.com/fK3BI3n.png)
 
-C.      Order API : http://localhost:8083/v1/order/{id}
+`Project Structure`에서 `Project SDK` 설정
 
-D.     Delivery API : http://localhost:8084/v1/delivery/{id}
+![Imgur](https://i.imgur.com/liLiTI2.png)
 
-E.      API Gateway : http://localhost:8000/{서비스도메인}/{API Endpoint}
+모듈 구조가 아래와 같이 딱딱 떨어져야 정상!
 
-       i.   http://localhost:8000/user/v1/user/u001
+![Imgur](https://i.imgur.com/8c4anFt.png)
 
-       ii.  http://localhost:8000/product/v1/product/0001
+## Install RabbitMQ
 
-       iii. http://localhost:8000/order/v1/order?userId=u0002
+`Windows`에서 `RabbitMQ`를 사용하기 위해서는 `Erlang`이 필요하다.
+
+참조
+* [Downloading and Installing RabbitMQ](https://www.rabbitmq.com/download.html)
+* [Erlang Programming Language](https://www.erlang.org/downloads)
+* [RabbitMQ Erlang Version Requirements](https://www.rabbitmq.com/which-erlang.html)
+
+환경 변수 설정
+
+![Imgur](https://i.imgur.com/mB0lqvB.png)
+
+![Imgur](https://i.imgur.com/ORQw125.png)
+
+실행
+
+```bash
+> rabbitmq-server.bat
+
+  ##  ##
+  ##  ##      RabbitMQ 3.7.15. Copyright (C) 2007-2019 Pivotal Software, Inc.
+  ##########  Licensed under the MPL.  See https://www.rabbitmq.com/
+  ######  ##
+  ##########  Logs: C:/Users/antop/AppData/Roaming/RabbitMQ/log/RABBIT~1.LOG
+                    C:/Users/antop/AppData/Roaming/RabbitMQ/log/rabbit@ANTOP-GRAM_upgrade.log
+
+              Starting broker...
+ completed with 3 plugins.
+```
+
+사용자 추가, Virtual Host 추가, 권한 추가 (**서버를 먼저 띄워야 한다**)
+
+```bash
+> rabbitmqctl add_user config config
+Adding user "config" ...
+
+> rabbitmqctl set_user_tags config administrator
+Setting tags for user "config" to [administrator] ...
+
+> rabbitmqctl add_vhost /config
+Adding vhost "/config" ...
+
+> rabbitmqctl set_permissions -p /config config "." "." ".*"
+Setting permissions for user "config" in vhost "/config" ...
+```
+
+GUI Console 사용하기
+
+```bash
+> rabbitmq-plugins enable rabbitmq_management
+```
+http://localhost:15672 접속하여 `config`/`config`
+
+![Imgur](https://i.imgur.com/RzSGBvd.png)
+
+로그인 성공하면 아래와 같은 `Overview`를 볼 수 있다.
+
+![Imgur](https://i.imgur.com/IgFQCOw.png)
+
+
+## 실행 순서
+
+※ 아래 모든 프로젝트는 개발(`dev`) 프로파일로 실행한다.
+
+![Imgur](https://i.imgur.com/XMcLKv9.png)
+
+1. RabbitMQ
+2. Cloudconfig
+3. Service-discovery: [http://localhost:9000](http://localhost:9000)
+4. Api-gateway
+5. Api-user / Api-product / Api-order / Api-delivery
+6. [Hystrix-dashboard](http://localhost:8998/hystrix/monitor?stream=http://localhost:8998/turbine.stream) (이건 딱히 순서 상관 없는 듯?)
+
+전부 실행된 모습 (`Api-delivery`는 3개 띄워봄...)
+
+![Imgur](https://i.imgur.com/Lae0xFq.png)
+
+Eureka
+
+![Imgur](https://i.imgur.com/Ms1Fx1z.png)
+
+이제 예제를 즐길 준비가 되었다. ㅠㅠ
+
+## Web GUI
+
+* Eureka: [http://localhost:9000](http://localhost:9000)
+* Hystrix Dashboard: [http:&#47;&#47;localhost:8998&#47;hystrix&#47;monitor&#63;stream=http:&#47;&#47;localhost:8998&#47;turbine.stream](http://localhost:8998/hystrix/monitor?stream=http://localhost:8998/turbine.stream)
+* RabbitMQ: [http://localhost:15672](http://localhost:9000)
+
+API test
+* User API: `http://localhost:8081/v1/user/{id}`
+* Product API: `http://localhost:8082/v1/product/{id}`
+* Order API: `http://localhost:8083/v1/order/{id}`
+* Delivery API: `http://localhost:8084/v1/delivery/{id}`
+* API Gateway: `http://localhost:8000/{서비스도메인}/{API Endpoint}`
+    - `http://localhost:8000/user/v1/user/u001`
+    - `http://localhost:8000/product/v1/product/0001`
+    - `http://localhost:8000/order/v1/order?userId=u0002`
