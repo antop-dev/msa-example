@@ -1,5 +1,7 @@
 # msa-example
 
+![Imgur](https://i.imgur.com/9mqE4XN.png)
+
 사내 교육 MSA
 
 `JDK`나 `IntelliJ` 관련 설정은 건너뛴다. 예제가 `Lombok`을 사용하므로 `IntelliJ + Lombok` 은 알아서 설정하자.
@@ -120,7 +122,7 @@ http://localhost:15672 접속하여 `config`/`config`
 
 
 ## 실행 순서
-
+U
 ※ 아래 모든 프로젝트는 개발(`dev`) 프로파일로 실행한다.
 
 ![Imgur](https://i.imgur.com/XMcLKv9.png)
@@ -153,6 +155,15 @@ API test
 * Order API: `http://localhost:8083/v1/order/{id}`
 * Delivery API: `http://localhost:8084/v1/delivery/{id}`
 * API Gateway: `http://localhost:8000/{서비스도메인}/{API Endpoint}`
-    - `http://localhost:8000/user/v1/user/u001`
-    - `http://localhost:8000/product/v1/product/0001`
-    - `http://localhost:8000/order/v1/order?userId=u0002`
+  - `http://localhost:8000/user/v1/user/u001`
+  - `http://localhost:8000/product/v1/product/0001`
+  - `http://localhost:8000/order/v1/order?userId=u0002`
+  - `http://localhost:8000/delivery/v1/delivery/0001`
+  
+## 수정사항
+
+Order 서비스에서 각각 User, Product 서비스한테 요청 후 객체로 변환 하다가 에러가 난다.
+
+원인은 `Jackson`에서 변환을 하려면 해당 클래는 빈 생성자가 필요하지만 `Lombok`의 `@Builder`를 사용했다.
+
+https://www.thecuriousdev.org/lombok-builder-with-jackson/
